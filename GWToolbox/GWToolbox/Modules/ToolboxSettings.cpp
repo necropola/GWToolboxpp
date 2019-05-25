@@ -31,6 +31,7 @@
 #include <Windows\NotePadWindow.h>
 #include <Windows\TradeWindow.h>
 #include <Windows\ObjectiveTimerWindow.h>
+#include <Windows\LiveSplit.h>
 
 #include <Widgets\TimerWidget.h>
 #include <Widgets\HealthWidget.h>
@@ -61,6 +62,7 @@ void ToolboxSettings::InitializeModules() {
 	if (use_trade) TradeWindow::Instance().Initialize();
 	if (use_notepad) NotePadWindow::Instance().Initialize();
 	if (use_objectivetimer) ObjectiveTimerWindow::Instance().Initialize();
+	LiveSplit::Instance().Initialize();
 
 	SettingsWindow::Instance().Initialize();
 

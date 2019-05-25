@@ -31,7 +31,7 @@ public:
 private:
     class Objective {
     public:
-		uint32_t id;
+		uint32_t id; // quest ID or relevant info
 		char     name[126];
 		DWORD    start;
 		DWORD    done;

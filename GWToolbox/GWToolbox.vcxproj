@@ -156,6 +156,7 @@
     <ClInclude Include="GWToolbox\Windows\HotkeysWindow.h" />
     <ClInclude Include="GWToolbox\Windows\Hotkeys.h" />
     <ClInclude Include="GWToolbox\Windows\InfoWindow.h" />
+    <ClInclude Include="GWToolbox\Windows\LiveSplit.h" />
     <ClInclude Include="GWToolbox\Windows\ObjectiveTimerWindow.h" />
     <ClInclude Include="GWToolbox\Windows\MainWindow.h" />
     <ClInclude Include="GWToolbox\Windows\MaterialsWindow.h" />
@@ -219,6 +220,7 @@
     <ClCompile Include="GWToolbox\Windows\HotkeysWindow.cpp" />
     <ClCompile Include="GWToolbox\Windows\Hotkeys.cpp" />
     <ClCompile Include="GWToolbox\Windows\InfoWindow.cpp" />
+    <ClCompile Include="GWToolbox\Windows\LiveSplit.cpp" />
     <ClCompile Include="GWToolbox\Windows\ObjectiveTimerWindow.cpp" />
     <ClCompile Include="GWToolbox\Windows\MainWindow.cpp" />
     <ClCompile Include="GWToolbox\Windows\MaterialsWindow.cpp" />
