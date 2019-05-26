@@ -182,7 +182,7 @@ void LiveSplit::AddDoaObjectives(GW::Vec2f spawn) {
 	segments.push_back({ Segment::DoorOpen, { 6356 }, "Room 1" , 30});
 	segments.push_back({ Segment::DoorOpen, { 45276 }, "Room 2" , 50});
 	segments.push_back({ Segment::DoorOpen, { 55421 }, "Room 3" , 75});
-	segments.push_back({ Segment::DoorOpen, { 17955 }, "Room 4" , 135});
+	segments.push_back({ Segment::DoorOpen, { 49719 }, "Room 4" , 135});
 	segments.push_back({ Segment::DoorOpen, { 45667 }, "Black beast gate", 190});
 	segments.push_back({ Segment::DoaAreadone, { (uint32_t)DoaAreaID::Foundry }, "Foundry" , 230 });
 	segments.push_back({ Segment::DoorOpen, { 54727 }, "City outside" , 320 });
@@ -215,7 +215,7 @@ void LiveSplit::Segment::MarkDone(DWORD current_time) {
 	done = true;
 	time = current_time / 1000;
 	// note: current_time is in milliseconds
-	diff = (current_time - (target * 1000)) / 1000.0f;
+	diff = ((long)current_time - ((long)target * 1000)) / 1000.0f;
 }
 
 void LiveSplit::Reset() {
