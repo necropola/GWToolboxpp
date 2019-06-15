@@ -252,7 +252,24 @@ void LiveSplit::SaveHistory() {
 	const std::wstring path = Resources::GetPath(L"location logs", filename);
 	file.open(path);
 
-	file << "room 1, room 2, room 3, room 4, bb gate, foundry, city outside, city, 360 take, 360 done, underlords, 6-0 take, veil, gloom \n";
+	const static char* splits[] = {
+		"room 1",
+		"room 2",
+		"room 3",
+		"room 4",
+		"bb gate",
+		"foundry",
+		"city outside",
+		"city",
+		"360 take",
+		"360 done",
+		"underlords",
+		"veil",
+		"gloom"
+	};
+	for (int i = 0; i < 13; ++i) {
+		file << splits[i] << ", ";
+	}
 	
 	for (const auto& run : history) {
 		size_t i = 0;
