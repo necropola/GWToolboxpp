@@ -60,8 +60,11 @@ void Updater::CheckForUpdate() {
 		if (version.compare(GWTOOLBOX_VERSION) == 0) {
 			// server and client versions match
 			if (BETA_VERSION[0]) {
-				// we are a beta/pre-release version. Version is the same, do update (e.g. 1.0 BETA -> 1.0).
-				// do update
+				// we are a beta/pre-release version. Version is the same (e.g. 1.0 BETA -> 1.0).
+				// should we update? No
+				server_version = version;
+				step = Done;
+				return;
 			} else {
 				// We are a release version, up to date
 				server_version = version;

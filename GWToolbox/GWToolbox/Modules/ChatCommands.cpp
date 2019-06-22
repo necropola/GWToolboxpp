@@ -20,6 +20,7 @@
 #include <GWCA\GameEntities\Guild.h>
 #include <GWCA\GameEntities\Skill.h>
 #include <GWCA\GameEntities\Player.h>
+#include <GWCA\GameEntities\Party.h>
 
 #include <GWCA\Context\GameContext.h>
 #include <GWCA\Context\WorldContext.h>
@@ -36,6 +37,7 @@
 #include <GWCA\Managers\SkillbarMgr.h>
 #include <GWCA\Managers\FriendListMgr.h>
 #include <GWCA\Managers\GameThreadMgr.h>
+#include <GWCA\Managers\PartyMgr.h>
 
 #include <GuiUtils.h>
 #include "GWToolbox.h"
@@ -149,6 +151,7 @@ void ChatCommands::Initialize() {
 	GW::Chat::CreateCommand(L"load", ChatCommands::CmdLoad);
 	GW::Chat::CreateCommand(L"transmo", ChatCommands::CmdTransmo);
 	GW::Chat::CreateCommand(L"resize", ChatCommands::CmdResize);
+	GW::Chat::CreateCommand(L"autores", ChatCommands::CmdAutores);
 }
 
 bool ChatCommands::WndProc(UINT Message, WPARAM wParam, LPARAM lParam) {
@@ -242,6 +245,73 @@ void ChatCommands::Update(float delta) {
 				}
 			}
 		}
+	}
+
+	if (autores_active) {
+		ChatCommands::Instance().RunAutores();
+	}
+}
+
+void ChatCommands::CmdAutores(const wchar_t* message, int argc, LPWSTR* argv) {
+	auto& instance = ChatCommands::Instance();
+	if (argc <= 1) {
+		instance.autores_active ^= 1;
+	} else {
+		std::wstring arg = GuiUtils::ToLower(argv[1]);
+		if (arg == L"on") {
+			instance.autores_active = true;
+		} else if (arg == L"off") {
+			instance.autores_active = false;
+		}
+	}
+	Log::Info("Autores is: %s", instance.autores_active ? "On" : "Off");
+}
+
+void ChatCommands::RunAutores() {
+	if (GW::Map::GetInstanceType() != GW::Constants::InstanceType::Explorable) return;
+	if (!GW::GameContext::instance()) return;
+	if (!GW::GameContext::instance()->world) return;
+	const GW::AgentArray& agents = GW::Agents::GetAgentArray();
+	if (!agents.valid()) return;
+	const GW::Agent* player = GW::Agents::GetPlayer();
+	if (!player) return;
+	if (player->GetIsDead()) return; // can't scroll while dead
+	const GW::PlayerArray& players = GW::GameContext::instance()->world->players;
+	if (!players.valid()) return;
+	const GW::PartyInfo* info = GW::PartyMgr::GetPartyInfo();
+	if (!info) return;
+	const GW::PlayerPartyMemberArray& partymembers = info->players;
+	if (!partymembers.valid()) return;
+
+	constexpr auto resscroll_range = GW::Constants::Range::Earshot;
+	constexpr auto resscroll_range_sqr = resscroll_range * resscroll_range;
+
+	static DWORD last_scrolled = GW::Map::GetInstanceTime();
+	constexpr DWORD ping = 100; // assume 100ms ping
+	if (GW::Map::GetInstanceTime() - last_scrolled < ping) return; // already did
+
+	// loop over party members (we use party array to avoid looping over all agents)
+	for (unsigned int i = 0; i < partymembers.size(); ++i) {
+		if (partymembers[i].login_number >= players.size()) continue;
+		const GW::Player& other_partyplayer = players[partymembers[i].login_number];
+		// TODO: check if player is out of compass range
+		// (this automatically happens with the distance check below, but 
+		// would be nice to stop early)
+		auto other_id = other_partyplayer.agent_id;
+		const GW::Agent* other = agents[other_id];
+		if (!other->GetIsDead()) continue;
+		auto dist = GW::GetSquareDistance(player->pos, other->pos);
+		if (dist > resscroll_range_sqr) continue;
+
+		// ok here we know someone is dead and we can res him.
+		// but, should we? or is someone else going to res instead?
+		
+		// Idea: check if any player above us in party order can also scroll, 
+		// and if so, let them do it
+
+		// for now just scroll
+		GW::Items::UseItemByModelId(GW::Constants::ItemID::ResScrolls);
+		last_scrolled = GW::Map::GetInstanceTime();
 	}
 }
 

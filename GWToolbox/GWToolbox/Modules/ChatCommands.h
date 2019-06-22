@@ -41,6 +41,7 @@ private:
 	static bool ReadTemplateFile(std::wstring path, char *buff, size_t buffSize);
 	static void ParseDistrict(const std::wstring& s, GW::Constants::District& district, int& number);
 
+	static void CmdAutores(const wchar_t* message, int argc, LPWSTR* argv);
 	static void CmdAge2(const wchar_t *message, int argc, LPWSTR *argv);
 	static void CmdDialog(const wchar_t *message, int argc, LPWSTR *argv);
 	static void CmdTB(const wchar_t *message, int argc, LPWSTR *argv);
@@ -68,4 +69,7 @@ private:
 	std::list<int> skills_to_use; // 0-7 range
 	float skill_usage_delay = 1.0f;
 	clock_t skill_timer = clock();
+
+	bool autores_active = false;
+	void RunAutores();
 };
