@@ -298,6 +298,7 @@ void ChatCommands::RunAutores() {
 		// (this automatically happens with the distance check below, but 
 		// would be nice to stop early)
 		auto other_id = other_partyplayer.agent_id;
+		if (other_id >= agents.size()) continue;
 		const GW::Agent* other = agents[other_id];
 		if (!other->GetIsDead()) continue;
 		auto dist = GW::GetSquareDistance(player->pos, other->pos);
