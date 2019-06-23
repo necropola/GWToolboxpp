@@ -300,6 +300,7 @@ void ChatCommands::RunAutores() {
 		auto other_id = other_partyplayer.agent_id;
 		if (other_id >= agents.size()) continue;
 		const GW::Agent* other = agents[other_id];
+		if (other == nullptr) continue;
 		if (!other->GetIsDead()) continue;
 		auto dist = GW::GetSquareDistance(player->pos, other->pos);
 		if (dist > resscroll_range_sqr) continue;
