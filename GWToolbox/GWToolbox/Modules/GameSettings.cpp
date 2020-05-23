@@ -801,6 +801,8 @@ void GameSettings::Initialize() {
 	GW::Chat::RegisterSendChatCallback(&SendChatCallback_Entry, &SendChatCallback);
 	GW::Chat::RegisterWhisperCallback(&WhisperCallback_Entry, &WhisperCallback);
 
+	GW::Chat::RegisterChatEventCallback(&SendChatCallback_Entry, OnChatEvent);
+
 #ifdef APRIL_FOOLS
 	AF::ApplyPatchesIfItsTime();
 #endif
@@ -1084,6 +1086,8 @@ void GameSettings::DrawInventorySettings() {
 }
 
 void GameSettings::DrawPartySettings() {
+	ImGui::Checkbox("Tick is a toggle", &tick_is_toggle);
+	ImGui::ShowHelp("Ticking in party window will work as a toggle instead of opening the menu");
 	ImGui::Checkbox("Automatically accept party invitations when ticked", &auto_accept_invites);
 	ImGui::ShowHelp("When you're invited to join someone elses party");
 	ImGui::Checkbox("Automatically accept party join requests when ticked", &auto_accept_join_requests);
@@ -1150,10 +1154,6 @@ void GameSettings::DrawSettingInternal() {
 	ImGui::Checkbox("Automatic /age2 on /age", &auto_age2_on_age);
 	ImGui::ShowHelp("GWToolbox++ will show /age2 time after /age is shown in chat");
 
-
-
-	//ImGui::Checkbox("Tick is a toggle", &tick_is_toggle);
-	//ImGui::ShowHelp("Ticking in party window will work as a toggle instead of opening the menu");
 	ImGui::Text("Flash Guild Wars taskbar icon when:");
 	ImGui::Indent();
 	ImGui::ShowHelp("Only triggers when Guild Wars is not the active window");
@@ -1818,6 +1818,15 @@ void GameSettings::OnCheckboxPreferenceChanged(GW::HookStatus* status, uint32_t 
 			GW::UI::SetCheckboxPreference(GW::UI::CheckboxPreference::CheckboxPreference_ShowChatTimestamps, 0);
 		}
 	}
+}
+
+// Tick is toggle- Blocks other context menus!!
+void GameSettings::OnChatEvent(GW::HookStatus* status, uint32_t event_id, uint32_t type, wchar_t* info, void* unk) {
+	if (type != 7 || info || unk)
+		return;
+	if (!Instance().tick_is_toggle || GW::Map::GetInstanceType() != GW::Constants::InstanceType::Outpost)
+		return;
+	GW::PartyMgr::Tick(!GW::PartyMgr::GetIsPlayerTicked());
 }
 
 // Set window title to player name on map load

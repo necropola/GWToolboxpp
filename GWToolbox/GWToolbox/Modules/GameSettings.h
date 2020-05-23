@@ -186,7 +186,7 @@ public:
 	static void OnServerMessage(GW::HookStatus*, GW::Packet::StoC::MessageServer*);
 	static void OnScreenShake(GW::HookStatus*, void* packet);
 	static void OnCheckboxPreferenceChanged(GW::HookStatus*, uint32_t msgid, void* wParam, void* lParam);
-	
+	static void OnChatEvent(GW::HookStatus* status, uint32_t event_id, uint32_t type, wchar_t* info, void* unk);
 
 	bool tick_is_toggle = false;
 
